@@ -5,16 +5,20 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import sun.security.ssl.SSLSocketFactoryImpl;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 
 /**
@@ -23,7 +27,7 @@ import java.io.IOException;
  * @date 2018/11/21 21:58
  */
 public class Test01 {
-    private String url = "https://localhost:8080";
+    private String url = "https://localhost:8080/getTime";
 
     @Test
     public void test01() {
@@ -50,6 +54,19 @@ public class Test01 {
         HttpGet get = new HttpGet(url);
         CloseableHttpResponse execute = client.execute(get);
         System.out.println(execute.getStatusLine().getStatusCode());
+    }
+
+    @Test
+    public void test04() throws Exception{
+        SSLContext context = new SSLContextBuilder().loadTrustMaterial(null, (cert, authType) -> true).build();
+        CloseableHttpClient client =
+                HttpClients.custom().setSSLContext(context).setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+        HttpGet get = new HttpGet(url);
+        CloseableHttpResponse execute = client.execute(get);
+        System.out.println(execute.getStatusLine().getStatusCode());
+
+
+
     }
 
 }
