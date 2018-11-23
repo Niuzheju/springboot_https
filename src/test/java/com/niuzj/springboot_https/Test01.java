@@ -5,10 +5,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -43,6 +40,7 @@ public class Test01 {
         System.out.println(execute.getEntity());
     }
 
+    //设置跳过ssl验证1
     @Test
     public void test03() throws Exception {
         TrustStrategy strategy = (cert, authType) -> true;
@@ -56,6 +54,7 @@ public class Test01 {
         System.out.println(execute.getStatusLine().getStatusCode());
     }
 
+    //设置跳过ssl验证2
     @Test
     public void test04() throws Exception{
         SSLContext context = new SSLContextBuilder().loadTrustMaterial(null, (cert, authType) -> true).build();
@@ -64,9 +63,6 @@ public class Test01 {
         HttpGet get = new HttpGet(url);
         CloseableHttpResponse execute = client.execute(get);
         System.out.println(execute.getStatusLine().getStatusCode());
-
-
-
     }
 
 }
